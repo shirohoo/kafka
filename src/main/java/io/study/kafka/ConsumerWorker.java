@@ -44,7 +44,6 @@ public class ConsumerWorker implements Runnable {
             while(true) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofSeconds(1));
                 for(ConsumerRecord<String, String> record : records) {
-                    System.out.println("record = " + record.value());
                     addHdfsFileBuffer(record);
                 }
                 saveBufferToHdfsFile(consumer.assignment());
@@ -96,7 +95,7 @@ public class ConsumerWorker implements Runnable {
                 outputStream.write(content);
                 outputStream.flush();
                 outputStream.close();
-                
+    
                 bufferString.put(partitionNum, new ArrayList<>());
             }
             catch(FileNotFoundException e) {
@@ -108,14 +107,14 @@ public class ConsumerWorker implements Runnable {
         }
     }
     
-    private void saveRemainBufferToHdfsFile() {
-        bufferString.forEach((partitionNum, value)->this.save(partitionNum));
-    }
-    
     public void stopAndWakeup() {
         log.info("Stop and Wakeup !");
         consumer.wakeup();
         saveRemainBufferToHdfsFile();
+    }
+    
+    private void saveRemainBufferToHdfsFile() {
+        bufferString.forEach((partitionNum, value)->this.save(partitionNum));
     }
     
 }
