@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan = "true" scanPeriod = "60 seconds" >
 	
-	<property name = "LOG_PATH" value = "/logs/kafka/" />
 	<property name = "LOG_LEVEL" value = "INFO" />
-	<property name = "LOG_FILE_NAME" value = "kafka" />
-	<property name = "ERR_LOG_FILE_NAME" value = "kafka_err" />
 	<property name = "LOG_PATTERN" value = "[%d{yyyy-MM-dd HH:mm:ss.SSS}] %highlight(%-5level) %boldMagenta(%thread) %boldCyan(%logger{15}) - %msg %n" />
 	
 	<!-- Console Appender -->
@@ -14,54 +11,38 @@
 		</layout >
 	</appender >
 	
-	<!-- File Appender -->
-	<appender name = "FILE" class = "ch.qos.logback.core.rolling.RollingFileAppender" >
-		<file >${LOG_PATH}/${LOG_FILE_NAME}.log</file >
-		<encoder class = "ch.qos.logback.classic.encoder.PatternLayoutEncoder" >
+	<!-- Kafka Appender -->
+	<appender name = "kafkaAppender" class = "com.github.danielwegener.logback.kafka.KafkaAppender" >
+		<encoder >
 			<pattern >${LOG_PATTERN}</pattern >
 		</encoder >
-		<rollingPolicy class = "ch.qos.logback.core.rolling.TimeBasedRollingPolicy" >
-			<fileNamePattern >${LOG_PATH}/${LOG_FILE_NAME}.%d{yyyy-MM-dd}_%i.gz</fileNamePattern >
-			<timeBasedFileNamingAndTriggeringPolicy class = "ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP" >
-				<maxFileSize >10MB</maxFileSize >
-			</timeBasedFileNamingAndTriggeringPolicy >
-			<maxHistory >7</maxHistory >
-		</rollingPolicy >
+		<topic >consumer_test</topic >
+		<keyingStrategy class = "com.github.danielwegener.logback.kafka.keying.NoKeyKeyingStrategy" />
+		<deliveryStrategy class = "com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy" />
+		<producerConfig >bootstrap.servers=my-kafka:9092</producerConfig >
+		<appender-ref ref = "CONSOLE" />
 	</appender >
 	
-	<!-- Error Appender -->
-	<appender name = "ERROR" class = "ch.qos.logback.core.rolling.RollingFileAppender" >
-		<filter class = "ch.qos.logback.classic.filter.LevelFilter" >
-			<level >error</level >
-			<onMatch >ACCEPT</onMatch >
-			<onMismatch >DENY</onMismatch >
-		</filter >
-		<file >${LOG_PATH}/${ERR_LOG_FILE_NAME}.log</file >
-		<encoder class = "ch.qos.logback.classic.encoder.PatternLayoutEncoder" >
-			<pattern >${LOG_PATTERN}</pattern >
-		</encoder >
-		<rollingPolicy class = "ch.qos.logback.core.rolling.TimeBasedRollingPolicy" >
-			<fileNamePattern >${LOG_PATH}/${ERR_LOG_FILE_NAME}.%d{yyyy-MM-dd}_%i.gz</fileNamePattern >
-			<timeBasedFileNamingAndTriggeringPolicy class = "ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP" >
-				<maxFileSize >10MB</maxFileSize >
-			</timeBasedFileNamingAndTriggeringPolicy >
-			<maxHistory >30</maxHistory >
-		</rollingPolicy >
+	<appender name = "ASYNC" class = "ch.qos.logback.classic.AsyncAppender" >
+		<appender-ref ref = "kafkaAppender" />
 	</appender >
 	
 	<!-- root level config -->
-	<logger name = "io.study.kafka.console" level = "DEBUG" >
+	<logger name = "io.study.kafka.CONSOLE" level = "DEBUG" >
 		<appender-ref ref = "CONSOLE" />
 	</logger >
-	<logger name = "io.study.kafka.file" level = "INFO" >
-		<appender-ref ref = "FILE" />
+	
+	<logger name = "io.study.kafka.kafkaAppender" level = "INFO" additivity = "false" >
+		<appender-ref ref = "kafkaAppender" />
 	</logger >
-	<logger name = "io.study.kafka.error" level = "ERROR" >
-		<appender-ref ref = "ERROR" />
+	
+	<logger name = "ASYNC" class = "ch.qos.logback.classic.AsyncAppender" >
+		<appender-ref ref = "kafkaAppender" />
 	</logger >
+	
 	<root level = "${LOG_LEVEL}" >
 		<appender-ref ref = "CONSOLE" />
-		<appender-ref ref = "FILE" />
-		<appender-ref ref = "ERROR" />
+		<!--		<appender-ref ref = "kafkaAppender" />-->
+		<appender-ref ref = "ASYNC" />
 	</root >
 </configuration >

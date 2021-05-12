@@ -14,7 +14,7 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
-public class ClientConfig {
+public class ClientConfigurer {
     
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         Properties properties = new Properties();

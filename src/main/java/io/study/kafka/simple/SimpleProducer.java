@@ -1,6 +1,5 @@
-package io.study.kafka.producer;
+package io.study.kafka.simple;
 
-import io.study.kafka.producer.callback.ProducerCallback;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -28,7 +27,7 @@ public class SimpleProducer {
         ProducerRecord<String, String> recode = new ProducerRecord<>(TOPIC_NAME, key, message);
         
         try(KafkaProducer<String, String> producer = new KafkaProducer<>(properties)) {
-            Future<RecordMetadata> send = producer.send(recode, new ProducerCallback());
+            Future<RecordMetadata> send = producer.send(recode, new SimpleProducerCallback());
             
             log.info("transmitted message: {}\n", recode);
             

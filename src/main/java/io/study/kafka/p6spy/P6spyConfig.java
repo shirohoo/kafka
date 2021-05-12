@@ -1,7 +1,6 @@
-package io.study.kafka.config;
+package io.study.kafka.p6spy;
 
 import com.p6spy.engine.spy.P6SpyOptions;
-import io.study.kafka.formatter.P6spyPrettySqlFormatter;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
