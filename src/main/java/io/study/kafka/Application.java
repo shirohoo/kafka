@@ -1,6 +1,6 @@
 package io.study.kafka;
 
-import org.springframework.boot.SpringApplication;
+import io.study.kafka.consumer.SubscribeConsumer;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
@@ -9,7 +9,8 @@ import org.springframework.dao.annotation.PersistenceExceptionTranslationPostPro
 public class Application {
     
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        //SpringApplication.run(Application.class, args);
+        SubscribeConsumer.run();
     }
     
     @Bean

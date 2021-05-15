@@ -1,4 +1,4 @@
-package io.study.kafka;
+package io.study.kafka.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -11,24 +11,24 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Slf4j
-public class MyKafkaConsumer {
+public class SubscribeConsumer {
     
     private final static String BOOTSTRAP_SERVERS = "my-kafka:9092";
-    private final static String TOPIC_NAME = "consumer_test";
-    private final static String GROUP_ID = "my-kafka-consumer";
+    private final static String TOPIC_NAME = "subscribe";
+    private final static String GROUP_ID = "subscribe-group";
     private final static int CONSUMER_COUNT = 1;
-    private final static List<ConsumerWorker> workers = new ArrayList<>();
+    private final static List<SubscribeConsumerWorker> workers = new ArrayList<>();
     
-    public static void main(String[] args) {
+    public static void run() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
-        
+            
             @Override
             public void run() {
                 log.info("Shutdown hook");
-                workers.forEach(ConsumerWorker::stopAndWakeup);
+                workers.forEach(SubscribeConsumerWorker::stopAndWakeup);
             }
         });
-    
+        
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID);
@@ -37,7 +37,7 @@ public class MyKafkaConsumer {
     
         ExecutorService executorService = Executors.newCachedThreadPool();
         for(int i = 0; i < CONSUMER_COUNT; i++) {
-            workers.add(new ConsumerWorker(props, TOPIC_NAME, i));
+            workers.add(new SubscribeConsumerWorker(props, TOPIC_NAME, i));
         }
         workers.forEach(executorService::execute);
     }

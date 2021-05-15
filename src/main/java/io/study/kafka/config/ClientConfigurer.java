@@ -24,14 +24,15 @@ public class ClientConfigurer {
             for(Node node : admin.describeCluster().nodes().get()) {
                 log.info("node : {}", node);
                 ConfigResource configResource = new ConfigResource(ConfigResource.Type.BROKER, node.idString());
-                
+        
                 Map<ConfigResource, Config> configResourceConfigMap = admin.describeConfigs(Collections.singleton(configResource)).all().get();
                 configResourceConfigMap.forEach((broker, config)->{
-                    config.entries().forEach(configEntry->log.info(configEntry.name() + " = " + configEntry.value()));
+                    config.entries().forEach(configEntry->log.info("{} = {}", configEntry.name(), configEntry.value()));
                 });
             }
-            
-            Map<String, TopicDescription> topicDescriptionMap = admin.describeTopics(Collections.singletonList("topic_test_2")).all().get();
+    
+            Map<String, TopicDescription> topicDescriptionMap = admin.describeTopics(Collections.singletonList("topic_test_2"))
+                                                                     .all().get();
             log.info("topic information = {}", topicDescriptionMap);
         }
         

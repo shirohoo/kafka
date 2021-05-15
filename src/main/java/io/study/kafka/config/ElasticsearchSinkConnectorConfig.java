@@ -26,11 +26,11 @@ public class ElasticsearchSinkConnectorConfig extends AbstractConfig {
             .define(ES_CLUSTER_HOST, Type.STRING,
                     ES_CLUSTER_HOST_DEFAULT_VALUE, Importance.HIGH,
                     ES_CLUSTER_HOST_DOC)
-            
+
             .define(ES_CLUSTER_PORT, Type.INT,
                     ES_CLUSTER_PORT_DEFAULT_VALUE, Importance.HIGH,
                     ES_CLUSTER_PORT_DOC)
-            
+
             .define(ES_INDEX, Type.STRING,
                     ES_INDEX_DEFAULT_VALUE, Importance.HIGH,
                     ES_INDEX_DOC);

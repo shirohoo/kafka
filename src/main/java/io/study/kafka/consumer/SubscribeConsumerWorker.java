@@ -1,4 +1,4 @@
-package io.study.kafka;
+package io.study.kafka.consumer;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-public class ConsumerWorker implements Runnable {
+public class SubscribeConsumerWorker implements Runnable {
     
     private static Map<Integer, List<String>> bufferString = new ConcurrentHashMap<>();
     private static Map<Integer, Long> currentFileOffset = new ConcurrentHashMap<>();
@@ -28,7 +28,7 @@ public class ConsumerWorker implements Runnable {
     private String threadName;
     private KafkaConsumer<String, String> consumer;
     
-    public ConsumerWorker(Properties props, String topic, int num) {
+    public SubscribeConsumerWorker(Properties props, String topic, int num) {
         log.info("Generate ConsumerWorker !");
         this.props = props;
         this.topic = topic;
@@ -38,7 +38,7 @@ public class ConsumerWorker implements Runnable {
     @Override
     public void run() {
         Thread.currentThread().setName(threadName);
-        consumer = new KafkaConsumer<String, String>(props);
+        consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(topic));
         try {
             while(true) {
@@ -86,7 +86,7 @@ public class ConsumerWorker implements Runnable {
     private void save(int partitionNum) {
         if(bufferString.get(partitionNum).size() > 0) {
             try {
-                String fileName = "C:\\log_test\\kafka_logs-" + partitionNum + "-" + currentFileOffset.get(partitionNum) + ".log";
+                String fileName = "D:\\log_test\\kafka_logs-" + partitionNum + "-" + currentFileOffset.get(partitionNum) + ".log";
                 FileOutputStream outputStream = new FileOutputStream(fileName);
                 
                 byte[] content = StringUtils.join(bufferString.get(partitionNum), '\n')
