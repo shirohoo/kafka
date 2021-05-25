@@ -4,6 +4,14 @@ plugins {
     id 'java'
 }
 
+jar {
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
 group = 'io.study'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
@@ -41,6 +49,9 @@ dependencies {
 
     //Logback Kafka Appender
     implementation group: 'com.github.danielwegener', name: 'logback-kafka-appender', version: '0.2.0-RC2'
+
+    //Gson
+    implementation 'com.google.code.gson:gson:2.8.6'
 
 }
 

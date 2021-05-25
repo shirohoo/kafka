@@ -1,4 +1,4 @@
-package io.study.kafka.p6spy;
+package io.study.kafka.common.p6spy;
 
 import com.p6spy.engine.logging.Category;
 import com.p6spy.engine.spy.appender.MessageFormattingStrategy;
